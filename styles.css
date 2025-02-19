@@ -1,0 +1,114 @@
+/* ====== GLOBAL STYLES ====== */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-areas:
+      "header header header"
+      "left main right"
+      "footer footer footer";
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr 2fr 1fr;
+    height: 100vh;
+  }
+  
+  /* ====== HEADER SECTION ====== */
+  header {
+    grid-area: header;
+    background-color: #f8b400;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .logo {
+    width: 50px;
+    height: auto;
+    position: absolute;
+    left: 1rem;
+  }
+  
+  /* ====== LEFT SIDEBAR (Recipe List) ====== */
+  .left {
+    grid-area: left;
+    background-color: #ede8c3;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+  
+  /* ====== MAIN CONTENT (Recipe Display) ====== */
+  .main {
+    grid-area: main;
+    background-color: #f0e698;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .recipe-image {
+    width: 100%;  
+    max-width: 500px;  /* Prevents it from becoming too large */
+    height: auto;  
+    display: block;
+    margin: 10px auto; 
+    border-radius: 10px; 
+  }
+  
+  
+  /* ====== RIGHT SIDEBAR (Adjustments) ====== */
+  .right {
+    grid-area: right;
+    background-color: #ede8c3;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* ====== FOOTER (Contact & Suggestion Box) ====== */
+  footer {
+    grid-area: footer;
+    background-color: #333;
+    color: white;
+    padding: 0.3rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 90px; /* Adjusted height to make it lower */
+  }
+  
+  /* ====== RESPONSIVE DESIGN ====== */
+  /* Makes the layout adjust to different screen sizes */
+  @media (max-width: 768px) {
+    body {
+      grid-template-areas:
+        "header"
+        "main"
+        "left"
+        "right"
+        "footer"; /* Footer stays below all content on small screens */
+      grid-template-rows: auto 1fr auto auto auto;
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+  
+    header {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .logo {
+      position: static;
+      margin-bottom: 0.5rem;
+    }
+  }
+  

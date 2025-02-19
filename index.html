@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rico's Cook Book</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Linking the external CSS file -->
+</head>
+<body>
+  <!-- HEADER SECTION -->
+  <header>
+    <img src="https://png.pngtree.com/png-vector/20220727/ourmid/pngtree-cooking-logo-png-image_6089722.png" alt="Rico's Cook Book Logo" class="logo">
+    <span>Rico's Cook Book!</span>
+  </header>
+
+  <!-- RIGHT SIDEBAR: Recipe List -->
+  <div class="right">
+    <h2>Recipes</h2>
+    <ul>
+      <li>Chicken Parm</li>
+      <li>Chicken Alfredo</li>
+      <li>Focaccia Bread</li>
+    </ul>
+  </div>
+
+  <!-- MAIN CONTENT: Recipe Display -->
+  <div class="main">
+    <h2>Recipe Name</h2>
+    <img src="images/recipe-placeholder.png" alt="Recipe Image" class="recipe-image">
+    <p>Here is where the main recipe content will go. To come: ingredients, steps!</p>
+  </div>  
+
+  <!-- LEFT SIDEBAR: Adjustments Section -->
+  <div class="left">
+    <h2>Adjustments</h2>
+    <p>Prep Time: <input type="number" min="0" step="1"> minutes</p>
+    <p>Cook Time: <input type="number" min="0" step="1"> minutes</p>
+    <p>Servings: <input type="number" min="1" step="1"></p>
+  </div>
+
+  <!-- FOOTER: Contact & Suggestion Box -->
+  <footer>
+    <p>Contact: rico@example.com</p>
+    <form>
+      <label for="suggestion-box">Suggestion Box:</label>
+      <textarea id="suggestion-box" rows="2" placeholder="Leave your suggestions here..."></textarea>
+      <button type="submit">Submit</button>
+    </form>
+  </footer>
+</body>
+</html>
