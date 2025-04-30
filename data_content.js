@@ -2,7 +2,7 @@ const contentData = [
     {
       id: "chicken-parm",
       name: "Chicken Parmesan",
-      image: "images/recipe-placeholder.png",
+      image: "images/parm.png",
       description: "A crispy breaded chicken breast topped with marinara sauce and melted cheese.",
       prepTime: 15,
       cookTime: 30,
@@ -11,7 +11,7 @@ const contentData = [
     {
       id: "chicken-alfredo",
       name: "Chicken Alfredo",
-      image: "images/recipe-placeholder.png",
+      image: "images/alfredo.png",
       description: "Creamy Alfredo pasta tossed with grilled chicken slices and herbs.",
       prepTime: 10,
       cookTime: 25,
@@ -20,7 +20,7 @@ const contentData = [
     {
       id: "focaccia-bread",
       name: "Focaccia Bread",
-      image: "images/recipe-placeholder.png",
+      image: "images/bread.png",
       description: "Fluffy, aromatic bread topped with olive oil, rosemary, and sea salt.",
       prepTime: 20,
       cookTime: 35,
