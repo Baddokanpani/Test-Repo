@@ -2,7 +2,7 @@ const contentData = [
     {
       id: "chicken-parm",
       name: "Chicken Parmesan",
-      image: "images/parm.png",
+      image: "images/Parm.png",
       description: "A crispy breaded chicken breast topped with marinara sauce and melted cheese.",
       prepTime: 15,
       cookTime: 30,
@@ -11,7 +11,7 @@ const contentData = [
     {
       id: "chicken-alfredo",
       name: "Chicken Alfredo",
-      image: "images/alfredo.png",
+      image: "images/Alfredo.png",
       description: "Creamy Alfredo pasta tossed with grilled chicken slices and herbs.",
       prepTime: 10,
       cookTime: 25,
