@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
+  <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-98BKGLW8SP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -10,43 +10,47 @@
 
   gtag('config', 'G-98BKGLW8SP');
 </script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rico's Cook Book</title>
-  <link rel="stylesheet" href="styles.css"> <!-- Linking the external CSS file -->
+  <link rel="stylesheet" href="styles.css" />
+  <script src="data_content.js" defer></script>
 </head>
-  
 <body>
   <!-- HEADER SECTION -->
   <header>
     <img src="https://png.pngtree.com/png-vector/20220727/ourmid/pngtree-cooking-logo-png-image_6089722.png" alt="Rico's Cook Book Logo" class="logo">
-    <span>Rico's Cook Book!</span>
+    <h1>Rico's Cook Book!</h1>
   </header>
 
-  <!-- RIGHT SIDEBAR: Recipe List -->
-  <div class="right">
-    <h2>Recipes</h2>
-    <ul>
-      <li>Chicken Parm</li>
-      <li>Chicken Bolognese</li>
-      <li>Focaccia Bread</li>
-    </ul>
-  </div>
-
-  <!-- MAIN CONTENT: Recipe Display -->
-  <div class="main">
-    <h2>Recipe Name</h2>
-    <img src="images/recipe-placeholder.png" alt="Recipe Image" class="recipe-image">
-    <p>Here is where the main recipe content will go. To come: ingredients, steps!</p>
-  </div>  
-
   <!-- LEFT SIDEBAR: Adjustments Section -->
-  <div class="left">
+  <section class="left">
     <h2>Adjustments</h2>
-    <p>Prep Time: <input type="number" min="0" step="1"> minutes</p>
-    <p>Cook Time: <input type="number" min="0" step="1"> minutes</p>
-    <p>Servings: <input type="number" min="1" step="1"></p>
-  </div>
+    <p>Prep Time: <span id="prep-time">--</span> minutes</p>
+    <p>Cook Time: <span id="cook-time">--</span> minutes</p>
+    <p>Servings: <span id="servings">--</span></p>
+  </section>
+
+  <!-- MAIN CONTENT SECTION -->
+  <main>
+    <!-- Recipe Template -->
+    <template id="recipe-template">
+      <div class="recipe">
+        <h3 class="recipe-title"></h3>
+        <img class="recipe-image" src="" alt="">
+        <p class="recipe-description"></p>
+      </div>
+    </template>
+
+    <!-- Recipe Display Container -->
+    <div id="recipe-container"></div>
+  </main>
+
+  <!-- RIGHT SIDEBAR: Recipe List -->
+  <section class="right">
+    <h2>Recipes</h2>
+    <div id="recipe-buttons"></div>
+  </section>
 
   <!-- FOOTER: Contact & Suggestion Box -->
   <footer>
@@ -57,5 +61,45 @@
       <button type="submit">Submit</button>
     </form>
   </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const container = document.getElementById("recipe-container");
+      const template = document.getElementById("recipe-template").content;
+      const buttonsContainer = document.getElementById("recipe-buttons");
+
+      const prepSpan = document.getElementById("prep-time");
+      const cookSpan = document.getElementById("cook-time");
+      const servingsSpan = document.getElementById("servings");
+
+      function loadRecipe(recipe) {
+        container.innerHTML = ""; // Clear old content
+        const clone = template.cloneNode(true);
+        clone.querySelector(".recipe-title").textContent = recipe.name;
+        clone.querySelector(".recipe-image").src = recipe.image;
+        clone.querySelector(".recipe-image").alt = recipe.name;
+        clone.querySelector(".recipe-description").textContent = recipe.description;
+        container.appendChild(clone);
+
+        // Update left sidebar
+        prepSpan.textContent = recipe.prepTime;
+        cookSpan.textContent = recipe.cookTime;
+        servingsSpan.textContent = recipe.servings;
+      }
+
+      // Populate buttons
+      contentData.forEach((recipe) => {
+        const btn = document.createElement("button");
+        btn.textContent = recipe.name;
+        btn.addEventListener("click", () => loadRecipe(recipe));
+        buttonsContainer.appendChild(btn);
+      });
+
+      // Load the first recipe by default
+      if (contentData.length > 0) {
+        loadRecipe(contentData[0]);
+      }
+    });
+  </script>
 </body>
 </html>
