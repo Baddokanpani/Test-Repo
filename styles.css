@@ -43,6 +43,62 @@ header {
   background-color: #f4f4f4;
 }
 
+.serving-adjustment {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #ddd;
+  font-weight: bold;
+}
+
+.serving-adjustment label {
+  margin: 0;
+}
+
+.serving-adjustment input {
+  width: 60px;
+  padding: 0.4rem;
+  border: 2px solid #f8b400;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.serving-adjustment input:focus {
+  outline: none;
+  background-color: #fff9e6;
+}
+
+/* SIDEBAR INGREDIENTS */
+#sidebar-ingredients-container {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #f8b400;
+}
+
+.sidebar-ingredients-section h3 {
+  margin: 0 0 0.8rem 0;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.sidebar-ingredients-section .ingredients-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-ingredients-section .ingredients-list li {
+  padding: 0.5rem;
+  background-color: white;
+  margin-bottom: 0.4rem;
+  border-left: 3px solid #f8b400;
+  border-radius: 2px;
+  font-size: 0.85rem;
+}
+
 .right {
   grid-area: right;
   background-color: #e8e8e8;
@@ -79,64 +135,54 @@ main img {
   margin: 1rem 0;
 }
 
-/* INGREDIENTS SECTION */
-.ingredients-section {
+/* RECIPE SECTION */
+.recipe {
   width: 100%;
-  max-width: 600px;
+  max-width: 700px;
   background-color: #f9f9f9;
   border: 2px solid #f8b400;
   border-radius: 8px;
   padding: 1.5rem;
-  margin-bottom: 2rem;
+  margin-top: 1rem;
 }
 
-.ingredients-section h3 {
-  margin-top: 1rem;
+.recipe-title {
   color: #333;
+  margin-top: 0;
   border-bottom: 2px solid #f8b400;
   padding-bottom: 0.5rem;
 }
 
-.serving-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  font-weight: bold;
+.recipe-description {
+  font-style: italic;
+  color: #666;
+  margin: 1rem 0;
+}
+
+/* INSTRUCTIONS SECTION */
+.recipe-instructions {
+  margin-top: 1.5rem;
+}
+
+.recipe-instructions h4 {
   color: #333;
+  border-bottom: 2px solid #f8b400;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
-.serving-controls label {
-  margin: 0;
+.instructions-text {
+  color: #555;
+  line-height: 1.8;
 }
 
-.serving-controls input {
-  width: 60px;
-  padding: 0.4rem;
-  border: 2px solid #f8b400;
-  border-radius: 4px;
-  font-size: 1rem;
-  text-align: center;
+.instructions-text p {
+  margin-bottom: 1rem;
+  text-align: justify;
 }
 
-.serving-controls input:focus {
-  outline: none;
-  background-color: #fff9e6;
-}
-
-.ingredients-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.ingredients-list li {
-  padding: 0.6rem;
-  background-color: white;
-  margin-bottom: 0.5rem;
-  border-left: 4px solid #f8b400;
-  border-radius: 3px;
-  font-size: 0.95rem;
+.instructions-text strong {
+  color: #333;
 }
 
 /* FOOTER */

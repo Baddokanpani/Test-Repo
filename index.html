@@ -28,34 +28,29 @@
     <h2>Adjustments</h2>
     <p>Prep Time: <span id="prep-time">--</span> minutes</p>
     <p>Cook Time: <span id="cook-time">--</span> minutes</p>
-    <p>Servings: <span id="servings">--</span></p>
+    <div class="serving-adjustment">
+      <label for="sidebar-serving-selector">Servings:</label>
+      <input type="number" id="sidebar-serving-selector" min="1" max="20" value="">
+    </div>
+    
+    <!-- Ingredients in Sidebar -->
+    <div id="sidebar-ingredients-container"></div>
   </section>
 
   <!-- MAIN CONTENT SECTION -->
   <main>
-    <!-- Ingredients Template -->
-    <template id="ingredients-template">
-      <div class="ingredients-section">
-        <div class="serving-controls">
-          <label for="serving-selector">Servings:</label>
-          <input type="number" id="serving-selector" min="1" max="20" value="">
-        </div>
-        <h3>Ingredients</h3>
-        <ul class="ingredients-list"></ul>
-      </div>
-    </template>
-
     <!-- Recipe Template -->
     <template id="recipe-template">
       <div class="recipe">
         <h3 class="recipe-title"></h3>
         <img class="recipe-image" src="" alt="">
         <p class="recipe-description"></p>
+        <div class="recipe-instructions">
+          <h4>Instructions</h4>
+          <div class="instructions-text"></div>
+        </div>
       </div>
     </template>
-
-    <!-- Ingredients Display Container -->
-    <div id="ingredients-container"></div>
 
     <!-- Recipe Display Container -->
     <div id="recipe-container"></div>
@@ -69,28 +64,30 @@
 
   <!-- FOOTER: Contact & Suggestion Box -->
   <footer>
-    <p>Contact: rico@example.com</p>
-    <form>
+    <p>Contact: rico.tru.suave@gmail.com</p>
+    <form action="https://formspree.io/f/mbdqbyyb" method="POST">
+      <label for="suggestion-email">Email</label>
+      <input type="email" id="suggestion-email" name="email" required placeholder="your@email.com" />
       <label for="suggestion-box">Suggestion Box:</label>
-      <textarea id="suggestion-box" rows="2" placeholder="Leave your suggestions here..."></textarea>
+      <textarea id="suggestion-box" name="message" rows="3" required placeholder="Leave your suggestions here..."></textarea>
+      <input type="hidden" name="_subject" value="New cookbook suggestion" />
       <button type="submit">Submit</button>
     </form>
   </footer>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const ingredientsContainer = document.getElementById("ingredients-container");
-      const ingredientsTemplate = document.getElementById("ingredients-template").content;
+      const sidebarIngredientsContainer = document.getElementById("sidebar-ingredients-container");
       const recipeContainer = document.getElementById("recipe-container");
       const recipeTemplate = document.getElementById("recipe-template").content;
       const buttonsContainer = document.getElementById("recipe-buttons");
 
       const prepSpan = document.getElementById("prep-time");
       const cookSpan = document.getElementById("cook-time");
-      const servingsSpan = document.getElementById("servings");
 
       let currentRecipe = null;
       let currentServingSize = null;
+      const servingSelector = document.getElementById("sidebar-serving-selector");
 
       function formatQuantity(quantity) {
         // Convert decimals to fractions for better readability
@@ -115,13 +112,17 @@
       }
 
       function displayIngredients(recipe, servingSize) {
-        ingredientsContainer.innerHTML = "";
-        const clone = ingredientsTemplate.cloneNode(true);
-        const ingredientsList = clone.querySelector(".ingredients-list");
-        const servingSelector = clone.querySelector("#serving-selector");
-
-        // Set the serving selector to current value
-        servingSelector.value = servingSize;
+        sidebarIngredientsContainer.innerHTML = "";
+        
+        const ingredientsDiv = document.createElement("div");
+        ingredientsDiv.className = "sidebar-ingredients-section";
+        
+        const title = document.createElement("h3");
+        title.textContent = "Ingredients";
+        ingredientsDiv.appendChild(title);
+        
+        const ingredientsList = document.createElement("ul");
+        ingredientsList.className = "ingredients-list";
 
         // Calculate scaling factor
         const scaleFactor = servingSize / recipe.servings;
@@ -129,30 +130,68 @@
         // Display each ingredient
         recipe.ingredients.forEach((ingredient) => {
           const li = document.createElement("li");
-          const scaledQuantity = ingredient.quantity * scaleFactor;
-          const displayQuantity = formatQuantity(scaledQuantity);
-
-          li.textContent = `${displayQuantity} ${ingredient.unit} ${ingredient.name}`;
+          
+          // Check if ingredient is "to taste"
+          if (ingredient.toTaste) {
+            li.textContent = ingredient.name;
+          } else {
+            const scaledQuantity = ingredient.quantity * scaleFactor;
+            const displayQuantity = formatQuantity(scaledQuantity);
+            li.textContent = `${displayQuantity} ${ingredient.unit} ${ingredient.name}`;
+          }
+          
           ingredientsList.appendChild(li);
         });
 
-        // Update serving size in left sidebar
-        servingsSpan.textContent = servingSize;
+        ingredientsDiv.appendChild(ingredientsList);
+        sidebarIngredientsContainer.appendChild(ingredientsDiv);
+      }
 
-        // Add event listener to serving selector
-        servingSelector.addEventListener("change", (e) => {
-          const newServingSize = parseInt(e.target.value) || recipe.servings;
-          displayIngredients(recipe, newServingSize);
+      function processInstructions(recipe, servingSize) {
+        const scaleFactor = servingSize / recipe.servings;
+        
+        // Create a map of ingredient names to scaled quantities
+        const ingredientMap = {};
+        recipe.ingredients.forEach((ingredient) => {
+          if (ingredient.toTaste) {
+            ingredientMap[ingredient.name] = ingredient.name;
+          } else {
+            const scaledQuantity = ingredient.quantity * scaleFactor;
+            const displayQuantity = formatQuantity(scaledQuantity);
+            ingredientMap[ingredient.name] = `${displayQuantity} ${ingredient.unit}`;
+          }
         });
+        
+        // Process each instruction and replace ingredient names with quantities
+        return recipe.instructions.map((instruction) => {
+          let processedInstruction = instruction;
+          
+          // Replace ingredient names with their scaled quantities
+          Object.keys(ingredientMap).forEach((ingredientName) => {
+            // Match ingredient names (case-sensitive based on how they appear in instructions)
+            const regex = new RegExp(`\\b${ingredientName}\\b`, 'g');
+            processedInstruction = processedInstruction.replace(regex, ingredientMap[ingredientName]);
+          });
+          
+          return processedInstruction;
+        });
+      }
 
-        ingredientsContainer.appendChild(clone);
+      function updateAdjustments(recipe, servingSize) {
+        const scaleFactor = servingSize / recipe.servings;
+        const scaledPrepTime = Math.round(recipe.prepTime * scaleFactor);
+
+        // Update sidebar displays (prep time scales, cook time doesn't)
+        prepSpan.textContent = scaledPrepTime;
+        cookSpan.textContent = recipe.cookTime;
+        servingSelector.value = servingSize;
       }
 
       function loadRecipe(recipe) {
         currentRecipe = recipe;
         currentServingSize = recipe.servings;
 
-        // Display ingredients
+        // Display ingredients in sidebar
         displayIngredients(recipe, currentServingSize);
 
         // Display recipe details
@@ -162,11 +201,22 @@
         clone.querySelector(".recipe-image").src = recipe.image;
         clone.querySelector(".recipe-image").alt = recipe.name;
         clone.querySelector(".recipe-description").textContent = recipe.description;
+        
+        // Populate instructions with ingredient quantities
+        const instructionsText = clone.querySelector(".instructions-text");
+        const processedInstructions = processInstructions(recipe, currentServingSize);
+        
+        // Create flowing paragraph text from instructions
+        let instructionHTML = "";
+        processedInstructions.forEach((instruction, index) => {
+          instructionHTML += `<p><strong>Step ${index + 1}:</strong> ${instruction}</p>`;
+        });
+        instructionsText.innerHTML = instructionHTML;
+        
         recipeContainer.appendChild(clone);
 
-        // Update left sidebar with times
-        prepSpan.textContent = recipe.prepTime;
-        cookSpan.textContent = recipe.cookTime;
+        // Update left sidebar with adjustments
+        updateAdjustments(recipe, currentServingSize);
       }
 
       // Populate buttons
@@ -181,9 +231,23 @@
       if (contentData.length > 0) {
         loadRecipe(contentData[0]);
       }
-    });
-  </script>
-      }
+
+      // Add event listener to serving selector
+      servingSelector.addEventListener("change", (e) => {
+        const newServingSize = parseInt(e.target.value) || currentRecipe.servings;
+        currentServingSize = newServingSize;
+        displayIngredients(currentRecipe, currentServingSize);
+        updateAdjustments(currentRecipe, currentServingSize);
+        
+        // Update instructions with new ingredient quantities
+        const instructionsText = document.querySelector(".instructions-text");
+        const processedInstructions = processInstructions(currentRecipe, currentServingSize);
+        let instructionHTML = "";
+        processedInstructions.forEach((instruction, index) => {
+          instructionHTML += `<p><strong>Step ${index + 1}:</strong> ${instruction}</p>`;
+        });
+        instructionsText.innerHTML = instructionHTML;
+      });
     });
   </script>
 </body>
