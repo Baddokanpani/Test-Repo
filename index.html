@@ -33,6 +33,18 @@
 
   <!-- MAIN CONTENT SECTION -->
   <main>
+    <!-- Ingredients Template -->
+    <template id="ingredients-template">
+      <div class="ingredients-section">
+        <div class="serving-controls">
+          <label for="serving-selector">Servings:</label>
+          <input type="number" id="serving-selector" min="1" max="20" value="">
+        </div>
+        <h3>Ingredients</h3>
+        <ul class="ingredients-list"></ul>
+      </div>
+    </template>
+
     <!-- Recipe Template -->
     <template id="recipe-template">
       <div class="recipe">
@@ -41,6 +53,9 @@
         <p class="recipe-description"></p>
       </div>
     </template>
+
+    <!-- Ingredients Display Container -->
+    <div id="ingredients-container"></div>
 
     <!-- Recipe Display Container -->
     <div id="recipe-container"></div>
@@ -64,27 +79,94 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const container = document.getElementById("recipe-container");
-      const template = document.getElementById("recipe-template").content;
+      const ingredientsContainer = document.getElementById("ingredients-container");
+      const ingredientsTemplate = document.getElementById("ingredients-template").content;
+      const recipeContainer = document.getElementById("recipe-container");
+      const recipeTemplate = document.getElementById("recipe-template").content;
       const buttonsContainer = document.getElementById("recipe-buttons");
 
       const prepSpan = document.getElementById("prep-time");
       const cookSpan = document.getElementById("cook-time");
       const servingsSpan = document.getElementById("servings");
 
+      let currentRecipe = null;
+      let currentServingSize = null;
+
+      function formatQuantity(quantity) {
+        // Convert decimals to fractions for better readability
+        const fractions = {
+          0.25: "¼",
+          0.33: "⅓",
+          0.5: "½",
+          0.66: "⅔",
+          0.75: "¾"
+        };
+
+        const decimal = quantity % 1;
+        const whole = Math.floor(quantity);
+
+        for (let key in fractions) {
+          if (Math.abs(decimal - key) < 0.01) {
+            return whole > 0 ? `${whole} ${fractions[key]}` : fractions[key];
+          }
+        }
+
+        return quantity % 1 === 0 ? whole.toString() : quantity.toFixed(2);
+      }
+
+      function displayIngredients(recipe, servingSize) {
+        ingredientsContainer.innerHTML = "";
+        const clone = ingredientsTemplate.cloneNode(true);
+        const ingredientsList = clone.querySelector(".ingredients-list");
+        const servingSelector = clone.querySelector("#serving-selector");
+
+        // Set the serving selector to current value
+        servingSelector.value = servingSize;
+
+        // Calculate scaling factor
+        const scaleFactor = servingSize / recipe.servings;
+
+        // Display each ingredient
+        recipe.ingredients.forEach((ingredient) => {
+          const li = document.createElement("li");
+          const scaledQuantity = ingredient.quantity * scaleFactor;
+          const displayQuantity = formatQuantity(scaledQuantity);
+
+          li.textContent = `${displayQuantity} ${ingredient.unit} ${ingredient.name}`;
+          ingredientsList.appendChild(li);
+        });
+
+        // Update serving size in left sidebar
+        servingsSpan.textContent = servingSize;
+
+        // Add event listener to serving selector
+        servingSelector.addEventListener("change", (e) => {
+          const newServingSize = parseInt(e.target.value) || recipe.servings;
+          displayIngredients(recipe, newServingSize);
+        });
+
+        ingredientsContainer.appendChild(clone);
+      }
+
       function loadRecipe(recipe) {
-        container.innerHTML = ""; // Clear old content
-        const clone = template.cloneNode(true);
+        currentRecipe = recipe;
+        currentServingSize = recipe.servings;
+
+        // Display ingredients
+        displayIngredients(recipe, currentServingSize);
+
+        // Display recipe details
+        recipeContainer.innerHTML = "";
+        const clone = recipeTemplate.cloneNode(true);
         clone.querySelector(".recipe-title").textContent = recipe.name;
         clone.querySelector(".recipe-image").src = recipe.image;
         clone.querySelector(".recipe-image").alt = recipe.name;
         clone.querySelector(".recipe-description").textContent = recipe.description;
-        container.appendChild(clone);
+        recipeContainer.appendChild(clone);
 
-        // Update left sidebar
+        // Update left sidebar with times
         prepSpan.textContent = recipe.prepTime;
         cookSpan.textContent = recipe.cookTime;
-        servingsSpan.textContent = recipe.servings;
       }
 
       // Populate buttons
@@ -98,6 +180,9 @@
       // Load the first recipe by default
       if (contentData.length > 0) {
         loadRecipe(contentData[0]);
+      }
+    });
+  </script>
       }
     });
   </script>
